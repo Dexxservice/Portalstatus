@@ -2,7 +2,7 @@ import { statusCatalog, StatusCode } from '../lib/statusCatalog';
 
 export function StatusCard({ code }: { code: StatusCode }) {
   const s = statusCatalog[code];
-  const eta = s.etaDays ? `ca. ${s.etaDays[0]}–${s.etaDays[1]} Tage` : '—';
+  const eta = s.etaDays ? `approx. ${s.etaDays[0]}–${s.etaDays[1]} days` : '—';
   return (
     <div style={{
       border: '1px solid #e5e5e5',
@@ -13,8 +13,8 @@ export function StatusCard({ code }: { code: StatusCode }) {
       maxWidth: 560
     }}>
       <div style={{fontSize: 18, fontWeight: 600}}>{s.label}</div>
-      <div><b>Nächster Schritt:</b> {s.nextStep}</div>
-      <div><b>Wartezeit:</b> {eta}</div>
+      <div><b>Next step:</b> {s.nextStep}</div>
+      <div><b>Estimated wait:</b> {eta}</div>
     </div>
   );
 }
