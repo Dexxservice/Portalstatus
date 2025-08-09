@@ -14,31 +14,31 @@ export type StatusInfo = {
 
 export const statusCatalog: Record<StatusCode, StatusInfo> = {
   DOCS_RECEIVED: {
-    label: 'Dokumente eingegangen',
-    nextStep: 'Vollständigkeitsprüfung',
-    etaDays: [0, 1], // 3–6 Stunden ~ <1 Tag
+    label: 'Documents received',
+    nextStep: 'Initial completeness check',
+    etaDays: [0, 1],
   },
   INTERNAL_REVIEW_DONE: {
-    label: 'Interne Erstprüfung abgeschlossen',
-    nextStep: 'Einreichung bei der Deutschen Botschaft Accra',
-    etaDays: [1, 2], // 24–48 Stunden
+    label: 'Internal review completed',
+    nextStep: 'Submit to the German Embassy',
+    etaDays: [1, 2],
   },
   SUBMITTED_TO_EMBASSY: {
-    label: 'Bei Botschaft eingereicht',
-    nextStep: 'Prüfung durch die Botschaft',
-    etaDays: [7, 7], // ~7 Werktage
+    label: 'Submitted to the embassy',
+    nextStep: 'Embassy review',
+    etaDays: [7, 7],
   },
   EMBASSY_APPROVED: {
-    label: 'Botschaft freigegeben',
-    nextStep: 'Terminvergabe',
-    etaDays: [7, 21], // 1–3 Wochen
+    label: 'Embassy approved',
+    nextStep: 'Schedule appointment',
+    etaDays: [7, 21],
   },
   APPOINTMENT_SCHEDULED: {
-    label: 'Termin vereinbart',
-    nextStep: 'Originaldokumente zum Termin mitbringen',
+    label: 'Appointment scheduled',
+    nextStep: 'Bring original documents to your appointment',
   },
   COMPLETED: {
-    label: 'Abgeschlossen / Visum erteilt',
-    nextStep: 'Abholung/Passrückgabe',
+    label: 'Completed / Visa issued',
+    nextStep: 'Collection / passport return',
   },
 };
