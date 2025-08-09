@@ -1,34 +1,38 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
-import { sendResendEmail } from './notify/resend';
+import { Resend } from 'resend';
+
+const resend = new Resend(process.env.RESEND_API_KEY);
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
-  // Verify secret
-  const secret = req.headers['x-webhook-secret'] || req.query.secret;
+  // Sicherheitscheck
+  const secret = req.headers['x-webhook-secret'];
   if (secret !== process.env.WEBHOOK_SECRET) {
     return res.status(401).json({ error: 'Unauthorized' });
   }
 
-  // Expect payload with new row data (Supabase Database Webhook)
-  const event = req.body;
-  try {
-    // Example payload picking:
-    const newRow = event?.record ?? event?.new ?? event;
-    const email = newRow?.applicant_email;
-    const newStatus = newRow?.status;
+  if (req.method === 'POST') {
+    const payload = req.body; // Supabase sendet hier die Änderungen
+    const email = payload.record?.applicant_email;
+    const status = payload.record?.status;
 
-    if (!email || !newStatus) {
-      return res.status(200).json({ ok: true, note: 'No email or status in payload' });
+    if (email && status) {
+      try {
+        await resend.emails.send({
+          from: 'Dexx Visa Service <no-reply@dein-domain.de>',
+          to: email,
+          subject: 'Visa Status Update',
+          html: `<p>Dear Applicant,</p>
+                 <p>Your visa application status has been updated to: <b>${status}</b>.</p>
+                 <p>Kind regards,<br>Dexx Visa Service GmbH</p>`
+        });
+
+        return res.status(200).json({ success: true });
+      } catch (err) {
+        console.error(err);
+        return res.status(500).json({ error: 'Failed to send email' });
+      }
     }
-
-    await sendResendEmail(
-      email,
-      'Ihr Visa-Status wurde aktualisiert',
-      `<p>Guten Tag,</p><p>Ihr Status lautet jetzt: <b>${newStatus}</b>.</p><p>Beste Grüße<br/>Dexx Visa Service</p>`
-    );
-
-    return res.status(200).json({ ok: true });
-  } catch (e:any) {
-    console.error(e);
-    return res.status(500).json({ error: e.message });
   }
+
+  return res.status(400).json({ error: 'Invalid request' });
 }
