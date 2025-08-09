@@ -6,7 +6,7 @@ import type { StatusCode } from '../lib/statusCatalog';
 type CaseRow = {
   id: string;
   applicant_email: string;
-  status: string; // kommt als Text aus der DB
+  status: string;
   updated_at: string;
 };
 
@@ -25,31 +25,27 @@ export default function Home() {
       setLoading(true);
       setError(null);
       try {
-        // Basis-Query: jüngste Fälle zuerst
         let query = supabase
           .from('cases')
           .select('*')
           .order('updated_at', { ascending: false })
           .limit(1);
 
-        // Optional: nach E-Mail filtern, wenn ?email= gesetzt ist
         if (qEmail) query = query.eq('applicant_email', qEmail);
 
         const { data, error } = await query;
-
         if (error) throw error;
-        const row = (data && data[0]) as CaseRow | undefined;
 
+        const row = (data && data[0]) as CaseRow | undefined;
         if (!row) {
-          setError('Kein Fall gefunden. Bitte E-Mail prüfen oder einen Testfall in Supabase anlegen.');
+          setError('No case found. Please check the email or create a test case in Supabase.');
           return;
         }
 
-        // Status aus der DB in unseren Typ gießen (fallback auf DOCS_RECEIVED)
         const normalized = (row.status as StatusCode) || 'DOCS_RECEIVED';
         setCode(normalized);
       } catch (e: any) {
-        setError(e.message ?? 'Unbekannter Fehler beim Laden.');
+        setError(e.message ?? 'Unknown error while loading.');
       } finally {
         setLoading(false);
       }
@@ -60,16 +56,15 @@ export default function Home() {
 
   return (
     <div style={{ display: 'grid', gap: 16 }}>
-      <h1>Ihr Visa-Status</h1>
+      <h1>Your Visa Status</h1>
 
-      {email && <div style={{ opacity: 0.8 }}>E-Mail: {email}</div>}
-      {loading && <div>Laden …</div>}
-      {error && <div style={{ color: 'crimson' }}>Fehler: {error}</div>}
+      {email && <div style={{ opacity: 0.8 }}>Email: {email}</div>}
+      {loading && <div>Loading…</div>}
+      {error && <div style={{ color: 'crimson' }}>Error: {error}</div>}
       {!loading && !error && <StatusCard code={code} />}
 
       <div style={{ opacity: 0.7, fontSize: 14 }}>
-        Tipp: Hängen Sie <code>?email=ihre.mail@example.com</code> an die URL an,
-        um gezielt Ihren Fall aufzurufen.
+        Tip: Append <code>?email=your.mail@example.com</code> to the URL to open your case directly.
       </div>
     </div>
   );
