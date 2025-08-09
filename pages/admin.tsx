@@ -1,3 +1,4 @@
+import AdminDeleteButton from '../components/AdminDeleteButton';
 import { useEffect, useMemo, useState } from 'react';
 import Head from 'next/head';
 import { supabase } from '../lib/supabaseClient';
