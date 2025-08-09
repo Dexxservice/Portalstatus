@@ -1,4 +1,4 @@
-import { statusCatalog, StatusCode } from '@/lib/statusCatalog';
+import { statusCatalog, StatusCode } from '../lib/statusCatalog';
 
 export function StatusCard({ code }: { code: StatusCode }) {
   const s = statusCatalog[code];
