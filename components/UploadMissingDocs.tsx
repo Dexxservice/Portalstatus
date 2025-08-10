@@ -24,7 +24,6 @@ export default function UploadMissingDocs({
       const uploadedPaths: string[] = [];
 
       for (const file of Array.from(files)) {
-        // einfache Größenbegrenzung: 10 MB
         if (file.size > 10 * 1024 * 1024) {
           throw new Error(`File too large: ${file.name} (>10MB)`);
         }
@@ -34,7 +33,7 @@ export default function UploadMissingDocs({
 
         const { error } = await supabase
           .storage
-          .from('case-uploads') // Bucket muss existieren (privat)
+          .from('case-uploads')
           .upload(path, file, { upsert: false });
 
         if (error) throw error;
@@ -42,15 +41,21 @@ export default function UploadMissingDocs({
         uploadedPaths.push(path);
       }
 
-      // 🔎 Log in case_uploads (falls Tabelle + Policy angelegt sind)
+      // Log in Tabelle (optional, aber bei dir gewünscht)
       if (uploadedPaths.length) {
         const rows = uploadedPaths.map(p => ({ case_id: caseId, file_path: p }));
         const { error: logErr } = await supabase.from('case_uploads').insert(rows);
-        if (logErr) {
-          // Logging-Fehler nicht an den User durchreichen
-          console.warn('case_uploads insert failed', logErr);
-        }
+        if (logErr) console.warn('case_uploads insert failed', logErr);
       }
+
+      // ➜ NEU: an API senden, die nach Google Drive spiegelt
+      try {
+        await fetch('/api/sync-to-drive', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ caseId, email, paths: uploadedPaths }),
+        });
+      } catch {}
 
       setMsg('Uploads received. We will review them within 1–3 working days.');
       setFiles(null);
