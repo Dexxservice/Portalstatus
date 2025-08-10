@@ -288,4 +288,23 @@ function row() {
 }
 function input() {
   return {
-    width
+    width: '100%',
+    padding: '8px 10px',
+    borderRadius: 10,
+    border: '1px solid #d1d5db',
+    outline: 'none'
+  } as React.CSSProperties;
+}
+function btn(variant: 'solid'|'ghost' = 'solid') {
+  return {
+    padding: '8px 12px',
+    borderRadius: 10,
+    border: variant === 'ghost' ? '1px solid #e5e7eb' : 'none',
+    background: variant === 'ghost' ? 'white' : '#111827',
+    color: variant === 'ghost' ? '#111' : 'white',
+    cursor: 'pointer'
+  } as React.CSSProperties;
+}
+function h2() {
+  return { margin: '0 0 12px', fontSize: 18 } as React.CSSProperties;
+}
