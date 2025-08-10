@@ -114,7 +114,7 @@ export default function AdminPage() {
         .eq('id', row.id);
       if (updErr) throw updErr;
 
-      // History (best-effort)  🔧 geändert: ohne .catch(...)
+      // History (best-effort) – ohne .catch(...)
       const { error: histErr } = await supabase.from('case_history').insert([{
         case_id: row.id,
         old_status: row.status,
@@ -187,8 +187,9 @@ export default function AdminPage() {
             placeholder="Search by email…"
             style={{ ...input(), maxWidth: 360 }}
           />
-          <button onClick={load} style={btn('ghost')}>Search/Reload</button>
-          <button onClick={() => { setSearch(''); load(); }} style={btn('ghost')}>Clear</button>
+          {/* FIX: load -> loadCases */}
+          <button onClick={loadCases} style={btn('ghost')}>Search/Reload</button>
+          <button onClick={() => { setSearch(''); loadCases(); }} style={btn('ghost')}>Clear</button>
         </section>
 
         {/* Cases List */}
@@ -287,23 +288,4 @@ function row() {
 }
 function input() {
   return {
-    width: '100%',
-    padding: '8px 10px',
-    borderRadius: 10,
-    border: '1px solid #d1d5db',
-    outline: 'none'
-  } as React.CSSProperties;
-}
-function btn(variant: 'solid'|'ghost' = 'solid') {
-  return {
-    padding: '8px 12px',
-    borderRadius: 10,
-    border: variant === 'ghost' ? '1px solid #e5e7eb' : 'none',
-    background: variant === 'ghost' ? 'white' : '#111827',
-    color: variant === 'ghost' ? '#111' : 'white',
-    cursor: 'pointer'
-  } as React.CSSProperties;
-}
-function h2() {
-  return { margin: '0 0 12px', fontSize: 18 } as React.CSSProperties;
-}
+    width
