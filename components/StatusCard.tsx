@@ -1,8 +1,10 @@
+import { buildEtaLabel } from '../lib/businessDays';
 import { statusCatalog, StatusCode } from '../lib/statusCatalog';
 
 export function StatusCard({ code }: { code: StatusCode }) {
   const s = statusCatalog[code];
-  const eta = s.etaDays ? `approx. ${s.etaDays[0]}–${s.etaDays[1]} days` : '—';
+ const eta = buildEtaLabel(new Date(), s.etaDays);
+  
   return (
     <div style={{
       border: '1px solid #e5e5e5',
