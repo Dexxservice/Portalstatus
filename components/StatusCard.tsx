@@ -1,13 +1,25 @@
 import { buildEtaLabel } from '../lib/businessDays';
 import { statusCatalog, StatusCode } from '../lib/statusCatalog';
+import UploadMissingDocs from './UploadMissingDocs';
 
-export function StatusCard({ code }: { code: StatusCode }) {
+export function StatusCard({
+  code,
+  caseId,
+  email,
+}: {
+  code: StatusCode;
+  caseId?: string | null;
+  email?: string | null;
+}) {
   const s = statusCatalog[code];
   const eta = buildEtaLabel(new Date(), s.etaDays);
 
-  // Show note only for embassy-related steps
+  // Embassy-Hinweis nur bei bestimmten Schritten
   const showEmbassyNote =
     code === 'SUBMITTED_TO_EMBASSY' || code === 'EMBASSY_APPROVED';
+
+  // Upload nur anzeigen, wenn Missing + wir caseId & email haben
+  const showUpload = code === 'MISSING_DOCUMENTS' && !!caseId && !!email;
 
   return (
     <div
@@ -31,11 +43,13 @@ export function StatusCard({ code }: { code: StatusCode }) {
       {showEmbassyNote && (
         <div style={{ fontSize: 12, color: '#555' }}>
           <em>
-            Note: The embassy operates Monday to Friday only. Waiting times
-            refer to working days.
+            Note: The embassy operates Monday to Friday only. Waiting times refer to
+            working days.
           </em>
         </div>
       )}
+
+      {showUpload && <UploadMissingDocs caseId={caseId!} email={email!} />}
     </div>
   );
 }

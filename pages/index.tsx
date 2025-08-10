@@ -15,6 +15,7 @@ export default function Home() {
   const [loading, setLoading] = useState(true);
   const [code, setCode] = useState<StatusCode>('DOCS_RECEIVED');
   const [email, setEmail] = useState<string | null>(null);
+  const [caseId, setCaseId] = useState<string | null>(null); // NEU
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
@@ -43,6 +44,7 @@ export default function Home() {
           return;
         }
 
+        setCaseId(row.id); // NEU
         const normalized = (row.status as StatusCode) || 'DOCS_RECEIVED';
         setCode(normalized);
       } catch (e: any) {
@@ -62,9 +64,8 @@ export default function Home() {
       {email && <div style={{ opacity: 0.8 }}>Email: {email}</div>}
       {loading && <div>Loading…</div>}
       {error && <div style={{ color: 'crimson' }}>Error: {error}</div>}
-      {!loading && !error && <StatusCard code={code} />}
+      {!loading && !error && <StatusCard code={code} caseId={caseId} email={email} />}
 
-      {/* FAQ below the status card */}
       <FAQ />
     </div>
   );
