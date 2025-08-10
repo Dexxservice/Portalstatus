@@ -15,28 +15,42 @@ export default function UploadMissingDocs({
 
   async function onUpload() {
     if (!files || files.length === 0) return;
+
     setBusy(true);
     setErr(null);
     setMsg(null);
 
     try {
+      const uploadedPaths: string[] = [];
+
       for (const file of Array.from(files)) {
+        // einfache Größenbegrenzung: 10 MB
         if (file.size > 10 * 1024 * 1024) {
           throw new Error(`File too large: ${file.name} (>10MB)`);
         }
+
         const clean = file.name.replace(/\s+/g, '_');
         const path = `${caseId}/${Date.now()}_${clean}`;
 
         const { error } = await supabase
           .storage
-          .from('case-uploads')        // ← Bucket-Name (kommt in Schritt 3)
+          .from('case-uploads') // Bucket muss existieren (privat)
           .upload(path, file, { upsert: false });
 
         if (error) throw error;
+
+        uploadedPaths.push(path);
       }
 
-      // optionales Logging in Tabelle (richten wir in Schritt 3 ein)
-      await supabase.from('case_uploads').insert([{ case_id: caseId, file_path: 'MULTI' }]).catch(() => {});
+      // 🔎 Log in case_uploads (falls Tabelle + Policy angelegt sind)
+      if (uploadedPaths.length) {
+        const rows = uploadedPaths.map(p => ({ case_id: caseId, file_path: p }));
+        const { error: logErr } = await supabase.from('case_uploads').insert(rows);
+        if (logErr) {
+          // Logging-Fehler nicht an den User durchreichen
+          console.warn('case_uploads insert failed', logErr);
+        }
+      }
 
       setMsg('Uploads received. We will review them within 1–3 working days.');
       setFiles(null);
@@ -48,13 +62,15 @@ export default function UploadMissingDocs({
   }
 
   return (
-    <div style={{
-      marginTop: 12,
-      border: '1px dashed #d0d0d0',
-      borderRadius: 12,
-      padding: 12,
-      background: '#fafafa'
-    }}>
+    <div
+      style={{
+        marginTop: 12,
+        border: '1px dashed #d0d0d0',
+        borderRadius: 12,
+        padding: 12,
+        background: '#fafafa',
+      }}
+    >
       <div style={{ fontWeight: 600, marginBottom: 6 }}>
         Upload your missing documents
       </div>
