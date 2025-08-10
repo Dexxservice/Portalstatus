@@ -64,10 +64,6 @@ export default function Home() {
       {error && <div style={{ color: 'crimson' }}>Error: {error}</div>}
       {!loading && !error && <StatusCard code={code} />}
 
-      <div style={{ opacity: 0.7, fontSize: 14 }}>
-        Tip: Append <code>?email=your.mail@example.com</code> to the URL to open your case directly.
-      </div>
-
       {/* FAQ below the status card */}
       <FAQ />
     </div>
