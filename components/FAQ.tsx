@@ -98,6 +98,19 @@ const faqs: FAQItem[] = [
       </>
     ),
   },
+
+  // 6) About Dexx
+  {
+    q: 'Who is Dexx and what do you do?',
+    a: (
+      <>
+        Dexx Personalvermittlung GmbH is a Germany-based recruitment company connecting
+        international applicants with reliable roles in logistics, warehouse operations,
+        production, and related fields. We keep the process transparent and support
+        candidates from first contact until job start.
+      </>
+    ),
+  },
 ];
 
 export default function FAQ() {
