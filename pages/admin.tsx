@@ -114,13 +114,16 @@ export default function AdminPage() {
         .eq('id', row.id);
       if (updErr) throw updErr;
 
-      // History (best-effort)
-      await supabase.from('case_history').insert([{
+      // History (best-effort)  🔧 geändert: ohne .catch(...)
+      const { error: histErr } = await supabase.from('case_history').insert([{
         case_id: row.id,
         old_status: row.status,
         new_status: next,
         changed_by: me ?? 'admin',
-      }]).catch(() => {});
+      }]);
+      if (histErr) {
+        console.warn('case_history insert failed', histErr);
+      }
 
       // UI aktualisieren
       setRows(prev => prev.map(c => (c.id === row.id ? { ...c, status: next } : c)));
