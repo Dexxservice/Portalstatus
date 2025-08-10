@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { supabase } from '../lib/supabaseClient';
 import { StatusCard } from '../components/StatusCard';
+import FAQ from '../components/FAQ';
 import type { StatusCode } from '../lib/statusCatalog';
 
 type CaseRow = {
@@ -55,8 +56,8 @@ export default function Home() {
   }, []);
 
   return (
-    <div style={{ display: 'grid', gap: 16 }}>
-      <h1>Your Visa Status</h1>
+    <div style={{ margin: '0 auto', padding: 16, maxWidth: 920, display: 'grid', gap: 16 }}>
+      <h1 style={{ fontSize: 28, margin: 0 }}>Your Visa Status</h1>
 
       {email && <div style={{ opacity: 0.8 }}>Email: {email}</div>}
       {loading && <div>Loading…</div>}
@@ -66,6 +67,9 @@ export default function Home() {
       <div style={{ opacity: 0.7, fontSize: 14 }}>
         Tip: Append <code>?email=your.mail@example.com</code> to the URL to open your case directly.
       </div>
+
+      {/* FAQ below the status card */}
+      <FAQ />
     </div>
   );
 }
