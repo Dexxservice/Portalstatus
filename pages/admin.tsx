@@ -187,10 +187,10 @@ export default function AdminPage() {
     placeholder="Search by email…"
     style={{ ...input(), maxWidth: 360 }}
   />
-  {/* FIX: load -> loadCases */}
   <button onClick={loadCases} style={btn('ghost')}>Search/Reload</button>
   <button onClick={() => { setSearch(''); loadCases(); }} style={btn('ghost')}>Clear</button>
 </section>
+
 
         {/* Cases List */}
         <section style={card()}>
