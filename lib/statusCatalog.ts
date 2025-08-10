@@ -26,7 +26,7 @@ export const statusCatalog: Record<StatusCode, StatusInfo> = {
   SUBMITTED_TO_EMBASSY: {
     label: 'Submitted to the embassy',
     nextStep: 'Embassy review',
-    etaDays: [7, 7],
+    etaDays: [7, 14],
   },
   EMBASSY_APPROVED: {
     label: 'Embassy approved',
