@@ -180,17 +180,17 @@ export default function AdminPage() {
         </section>
 
         {/* Search */}
-        <section style={{ marginTop: 16, marginBottom: 8, display: 'flex', gap: 8 }}>
-          <input
-            value={search}
-            onChange={e => setSearch(e.target.value)}
-            placeholder="Search by email…"
-            style={{ ...input(), maxWidth: 360 }}
-          />
-          {/* FIX: load -> loadCases */}
-          <button onClick={loadCases} style={btn('ghost')}>Search/Reload</button>
-          <button onClick={() => { setSearch(''); loadCases(); }} style={btn('ghost')}>Clear</button>
-        </section>
+<section style={{ marginTop: 16, marginBottom: 8, display: 'flex', gap: 8 }}>
+  <input
+    value={search}
+    onChange={e => setSearch(e.target.value)}
+    placeholder="Search by email…"
+    style={{ ...input(), maxWidth: 360 }}
+  />
+  {/* FIX: load -> loadCases */}
+  <button onClick={loadCases} style={btn('ghost')}>Search/Reload</button>
+  <button onClick={() => { setSearch(''); loadCases(); }} style={btn('ghost')}>Clear</button>
+</section>
 
         {/* Cases List */}
         <section style={card()}>
